@@ -1,0 +1,24 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "threatjam",
+	"main": "api/index.ts",
+	"compatibility_date": "2025-04-10",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"durable_objects": {
+		"bindings": [
+			{ "name": "ROOM", "class_name": "Room" }
+		]
+	},
+	"migrations": [
+		{ "tag": "v1", "new_classes": ["Room"] }
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "dist/client"
+	},
+	"observability": {
+		"enabled": false
+	}
+}

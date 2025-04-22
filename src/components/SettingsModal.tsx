@@ -24,7 +24,7 @@ const SettingsModal: FC<SettingsModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleChange = (
+  /* const handleChange = (
     key: keyof RoomSettings,
     value: boolean | (string | number)[]
   ) => {
@@ -32,7 +32,7 @@ const SettingsModal: FC<SettingsModalProps> = ({
       ...localSettings,
       [key]: value,
     });
-  };
+  }; */
 
   const handleSave = () => {
     console.log('Saving settings from modal:', localSettings);

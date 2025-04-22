@@ -31,14 +31,30 @@ const RoomScreen: FC<RoomScreenProps> = ({
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
+  const [localDiagramCode, setLocalDiagramCode] = useState(
+    roomData.settings.diagramCode || ''
+  );
+
+  useEffect(() => {
+    setLocalDiagramCode(roomData.settings.diagramCode || '');
+  }, [roomData.settings.diagramCode]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (localDiagramCode !== (roomData.settings.diagramCode || '')) {
+        onUpdateSettings({ diagramCode: localDiagramCode });
+      }
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [localDiagramCode, roomData.settings.diagramCode, onUpdateSettings]);
+
+  const diagramUrl = localDiagramCode
+    ? `https://www.plantuml.com/plantuml/svg/${encode(localDiagramCode)}`
+    : '';
+
   useEffect(() => {
     console.log('Room settings updated:', roomData.settings);
   }, [roomData.settings]);
-
-  const diagramCode = roomData.settings.diagramCode || '';
-  const diagramUrl = diagramCode
-    ? `https://www.plantuml.com/plantuml/svg/${encode(diagramCode)}`
-    : '';
 
   return (
     <div className="flex flex-col h-screen">
@@ -122,9 +138,19 @@ const RoomScreen: FC<RoomScreenProps> = ({
           </ul>
         </div>
 
-        <div className="flex flex-col p-4 md:p-6 overflow-y-auto">
-          <div className="mb-8">
-            <h2 className="mb-4 text-xl font-semibold">Diagram Preview</h2>
+        <div className="flex flex-col p-4 md:p-6 overflow-y-auto space-y-8">
+          <div>
+            <h2 className="mb-4 text-xl font-semibold">Diagram Editor</h2>
+            <textarea
+              value={localDiagramCode}
+              onChange={(e) => setLocalDiagramCode(e.target.value)}
+              rows={12}
+              className="w-full font-mono text-sm border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+            />
+          </div>
+
+          <div>
+            <h2 className="mb-4 text-xl font-semibold">Live Preview</h2>
             {diagramUrl ? (
               <img
                 src={diagramUrl}
@@ -133,7 +159,7 @@ const RoomScreen: FC<RoomScreenProps> = ({
               />
             ) : (
               <p className="text-gray-500">
-                No diagram loaded. Moderator can paste the PlantUML source in Room Settings.
+                No diagram loaded. Paste PlantUML code above to see preview.
               </p>
             )}
           </div>

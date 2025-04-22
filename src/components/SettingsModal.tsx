@@ -24,6 +24,7 @@ const SettingsModal: FC<SettingsModalProps> = ({
 
   if (!isOpen) return null;
 
+  // @ts-ignore
   const handleChange = (
     key: keyof RoomSettings,
     value: string
@@ -58,18 +59,7 @@ const SettingsModal: FC<SettingsModalProps> = ({
         </div>
 
         <div className="space-y-4">
-          <div>
-            <label htmlFor="diagram-source" className="block text-sm font-medium text-gray-700">
-              Diagram Source (PlantUML)
-            </label>
-            <textarea
-              id="diagram-source"
-              rows={10}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              value={localSettings.diagramCode || ''}
-              onChange={(e) => handleChange('diagramCode', e.target.value)}
-            />
-          </div>
+          {/* Room settings controls go here */}
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">

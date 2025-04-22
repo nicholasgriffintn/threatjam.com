@@ -31,12 +31,20 @@ const RoomScreen: FC<RoomScreenProps> = ({
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
+  const defaultDiagramCode = `
+    Person(1, "Label", "Optional Description")
+    Container(2, "Label", "Technology", "Optional Description")
+    System(3, "Label", "Optional Description")
+
+    Rel(1, 2, "Label", "Optional Technology")
+  `
+
   const [localDiagramCode, setLocalDiagramCode] = useState(
-    roomData.settings.diagramCode || ''
+    roomData.settings.diagramCode || defaultDiagramCode
   );
 
   useEffect(() => {
-    setLocalDiagramCode(roomData.settings.diagramCode || '');
+    setLocalDiagramCode(roomData.settings.diagramCode || defaultDiagramCode);
   }, [roomData.settings.diagramCode]);
 
   useEffect(() => {
@@ -49,7 +57,13 @@ const RoomScreen: FC<RoomScreenProps> = ({
   }, [localDiagramCode, roomData.settings.diagramCode, onUpdateSettings]);
 
   const diagramUrl = localDiagramCode
-    ? `https://www.plantuml.com/plantuml/svg/${encode(localDiagramCode)}`
+    ? `https://www.plantuml.com/plantuml/svg/${encode(`@startuml Diagram
+
+    !include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+    !include https://raw.githubusercontent.com/paulbrimicombe/stride-plantuml/main/stride.puml
+
+    ${localDiagramCode}
+    @enduml`)}`
     : '';
 
   useEffect(() => {

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
+    "plantuml-encoder": "^1.4.0",
     "qrcode.react": "^4.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -21,6 +22,7 @@
     "@cloudflare/vite-plugin": "^1.0.7",
     "@cloudflare/workers-types": "^4.20250410.0",
     "@tailwindcss/vite": "^4.1.4",
+    "@types/plantuml-encoder": "^1.4.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.0",

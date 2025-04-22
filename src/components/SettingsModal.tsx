@@ -24,15 +24,15 @@ const SettingsModal: FC<SettingsModalProps> = ({
 
   if (!isOpen) return null;
 
-  /* const handleChange = (
+  const handleChange = (
     key: keyof RoomSettings,
-    value: boolean | (string | number)[]
+    value: string
   ) => {
     setLocalSettings({
       ...localSettings,
       [key]: value,
     });
-  }; */
+  };
 
   const handleSave = () => {
     console.log('Saving settings from modal:', localSettings);
@@ -58,6 +58,18 @@ const SettingsModal: FC<SettingsModalProps> = ({
         </div>
 
         <div className="space-y-4">
+          <div>
+            <label htmlFor="diagram-source" className="block text-sm font-medium text-gray-700">
+              Diagram Source (PlantUML)
+            </label>
+            <textarea
+              id="diagram-source"
+              rows={10}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              value={localSettings.diagramCode || ''}
+              onChange={(e) => handleChange('diagramCode', e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">

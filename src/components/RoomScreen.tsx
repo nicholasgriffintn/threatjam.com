@@ -1,4 +1,5 @@
 import { type FC, useState, useEffect } from 'react';
+import { encode } from 'plantuml-encoder';
 
 import type { RoomData } from '../types';
 import ConnectionStatus from './ConnectionStatus';
@@ -34,6 +35,10 @@ const RoomScreen: FC<RoomScreenProps> = ({
     console.log('Room settings updated:', roomData.settings);
   }, [roomData.settings]);
 
+  const diagramCode = roomData.settings.diagramCode || '';
+  const diagramUrl = diagramCode
+    ? `https://www.plantuml.com/plantuml/svg/${encode(diagramCode)}`
+    : '';
 
   return (
     <div className="flex flex-col h-screen">
@@ -119,10 +124,18 @@ const RoomScreen: FC<RoomScreenProps> = ({
 
         <div className="flex flex-col p-4 md:p-6 overflow-y-auto">
           <div className="mb-8">
-            <h2 className="mb-4 text-xl font-semibold">Coming Soon</h2>
-            <div className="flex flex-wrap gap-2 md:gap-3">
-              <p>Stay tuned!</p>
-            </div>
+            <h2 className="mb-4 text-xl font-semibold">Diagram Preview</h2>
+            {diagramUrl ? (
+              <img
+                src={diagramUrl}
+                alt="C4 Diagram Preview"
+                className="w-full border rounded-md shadow-sm"
+              />
+            ) : (
+              <p className="text-gray-500">
+                No diagram loaded. Moderator can paste the PlantUML source in Room Settings.
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import ConnectionStatus from './ConnectionStatus';
 import ErrorBanner from './ErrorBanner';
 import SettingsModal from './SettingsModal';
 import ShareRoomModal from './ShareRoomModal';
+import DiagramEditor from './DiagramEditor';
 
 interface RoomScreenProps {
   roomData: RoomData;
@@ -30,6 +31,7 @@ const RoomScreen: FC<RoomScreenProps> = ({
 }) => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [editorMode, setEditorMode] = useState<'code' | 'visual'>('visual');
 
   const defaultDiagramCode = `
     Person(1, "Label", "Optional Description")
@@ -57,13 +59,7 @@ const RoomScreen: FC<RoomScreenProps> = ({
   }, [localDiagramCode, roomData.settings.diagramCode, onUpdateSettings]);
 
   const diagramUrl = localDiagramCode
-    ? `https://www.plantuml.com/plantuml/svg/${encode(`@startuml Diagram
-
-    !include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
-    !include https://raw.githubusercontent.com/paulbrimicombe/stride-plantuml/main/stride.puml
-
-    ${localDiagramCode}
-    @enduml`)}`
+    ? `https://www.plantuml.com/plantuml/svg/${encode(localDiagramCode)}`
     : '';
 
   useEffect(() => {
@@ -127,7 +123,7 @@ const RoomScreen: FC<RoomScreenProps> = ({
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-[30%_70%] flex-1 h-full">
+      <div className="grid grid-cols-1 md:grid-cols-[20%_80%] flex-1 h-full">
         <div className="p-4 bg-gray-100 border-b md:border-b-0 md:border-r overflow-y-auto">
           <h2 className="mb-4 text-lg font-medium">Participants ({roomData.users.length})</h2>
           <ul className="space-y-2">
@@ -153,14 +149,50 @@ const RoomScreen: FC<RoomScreenProps> = ({
         </div>
 
         <div className="flex flex-col p-4 md:p-6 overflow-y-auto space-y-8">
-          <div>
-            <h2 className="mb-4 text-xl font-semibold">Diagram Editor</h2>
-            <textarea
-              value={localDiagramCode}
-              onChange={(e) => setLocalDiagramCode(e.target.value)}
-              rows={12}
-              className="w-full font-mono text-sm border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-            />
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Diagram Editor</h2>
+            <div className="flex border rounded-md overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setEditorMode('visual')}
+                className={`px-3 py-1 text-sm ${
+                  editorMode === 'visual'
+                    ? 'bg-teal-600 text-white'
+                    : 'bg-gray-100 hover:bg-gray-200'
+                }`}
+              >
+                Visual Editor
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditorMode('code')}
+                className={`px-3 py-1 text-sm ${
+                  editorMode === 'code'
+                    ? 'bg-teal-600 text-white'
+                    : 'bg-gray-100 hover:bg-gray-200'
+                }`}
+              >
+                Code Editor
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            {editorMode === 'visual' ? (
+              <div className="border rounded-md p-4 bg-white">
+                <DiagramEditor
+                  diagramCode={localDiagramCode}
+                  onChange={setLocalDiagramCode}
+                />
+              </div>
+            ) : (
+              <textarea
+                value={localDiagramCode}
+                onChange={(e) => setLocalDiagramCode(e.target.value)}
+                rows={12}
+                className="w-full font-mono text-sm border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+              />
+            )}
           </div>
 
           <div>
@@ -173,7 +205,7 @@ const RoomScreen: FC<RoomScreenProps> = ({
               />
             ) : (
               <p className="text-gray-500">
-                No diagram loaded. Paste PlantUML code above to see preview.
+                No diagram loaded. Use the visual editor or paste PlantUML code to see preview.
               </p>
             )}
           </div>
